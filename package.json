@@ -1,0 +1,46 @@
+{
+  "registry": "jspm",
+  "name": "sp-react-forms",
+  "version": "0.0.1",
+  "description": "",
+  "repository": "salespreso/sp-react-forms",
+  "scripts": {
+    "test": "node_modules/.bin/karma start --single-run",
+    "test:continuous": "node_modules/.bin/karma start --port=`get-port`",
+    "lint": "eslint -c .eslintrc --quiet --cache src/lib src/example"
+  },
+  "keywords": [],
+  "devDependencies": {
+    "eslint-config-salespreso": "^0.1.7",
+    "get-port": "^1.0.0",
+    "git-hooks": "^1.0.2",
+    "gulp": "^3.9.0",
+    "jspm": "^0.16.12",
+    "karma-config": "^1.0.0",
+    "salespreso-gulp": "^4.1.1"
+  },
+  "main": "index",
+  "jspm": {
+    "directories": {
+      "lib": "src/lib"
+    },
+    "configFile": "src/config.js",
+    "dependencies": {
+      "ampersand-state": "npm:ampersand-state@^4.8.2",
+      "lodash": "npm:lodash@^3.10.1"
+    },
+    "devDependencies": {
+      "babel": "npm:babel-core@^5.8.24",
+      "babel-runtime": "npm:babel-runtime@^5.8.24",
+      "cerebral": "npm:cerebral@^0.26.1",
+      "cerebral-baobab": "npm:cerebral-baobab@^0.4.3",
+      "cerebral-react": "npm:cerebral-react@^0.7.0",
+      "cerebral-router": "npm:cerebral-router@^0.7.4",
+      "core-js": "npm:core-js@^1.1.4",
+      "react": "npm:react@^0.14.3",
+      "react-dom": "npm:react-dom@^0.14.3",
+      "sp-application": "npm:sp-application@^1.1.1",
+      "sp-components": "npm:sp-components@^0.0.25"
+    }
+  }
+}

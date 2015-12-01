@@ -1,0 +1,12 @@
+node_modules
+jspm_packages
+npm-debug.log
+dist
+coverage
+.sass-cache
+src/main-bundle*
+localsettings.js
+.build-cache
+.build
+.tern-port
+.eslintcache
