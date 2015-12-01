@@ -9,7 +9,13 @@ export const validateForm = (input, state, output) => {
 	const {fields, store} = input;
 
 	for (const field in fields) {
-		const {value, validators} = fields[field];
+		const {value} = fields[field];
+		let {validators} = fields[field];
+
+		if (typeof validators === "function") {
+			validators = validators();
+		}
+
 		const responses = validators.map((validator) => {
 			return validator(value);
 		});

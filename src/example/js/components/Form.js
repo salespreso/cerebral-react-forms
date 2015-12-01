@@ -18,29 +18,28 @@ const IntegerHigherThan = function(num) {
 	};
 };
 
-function InputConnector(options = {}) {
-	let validators = [NotBlankValidator, MustContainPandaValidator];
-	if (options.validators) {
-		validators = options.validators;
-	}
-	return {
-		validators,
-		connector: (data, done) => {
-			return {
-				value: data,
-				onChange: (value) => {
-					done(value);
-				}
-			};
-		}
+function InputConnector() {
+	return (data, done) => {
+		return {
+			value: data,
+			onChange: (value) => {
+				done(value);
+			}
+		};
 	};
 }
 
 @form("test", ["testapp", "form"], {
-	name: InputConnector({ minLength: 10 }),
-	age: InputConnector({
-		validators: [IntegerHigherThan(20)]
-	})
+	name: {
+		connector: InputConnector({}),
+		validators: [NotBlankValidator, MustContainPandaValidator]
+	},
+	age: {
+		connector: InputConnector({}),
+		validators: function() {
+			return [IntegerHigherThan(20)];
+		}
+	}
 })
 class Layout extends React.Component {
 	handleSubmit(e) {
