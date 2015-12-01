@@ -26,6 +26,8 @@ export default class TestApp {
 		return {
 			form: {
 				fields: {
+					password1: "",
+					password2: "",
 					name: "",
 					age: "10"
 				},

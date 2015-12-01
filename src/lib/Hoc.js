@@ -18,6 +18,7 @@ export default function(Component, name, store, formProps = {}) {
 				// Set signal here
 				signals.formDriver.stateChanged({
 					store: [...store, "fields", name],
+					name,
 					value
 				});
 			};
@@ -31,12 +32,22 @@ export default function(Component, name, store, formProps = {}) {
 				errors: {}
 			};
 
-			for (const prop in formProps) {
-				const formProp = formProps[prop];
+			for (const prop in formProps.fields) {
+				const formProp = formProps.fields[prop];
 				const done = this.signalFactory(prop);
+
+				let connector = formProp;
+				if (typeof connector === "object") {
+					connector = formProp.connector;
+				}
+
+				if (typeof this.props.form.fields[prop] === "undefined") {
+					throw new Error(`Prop ${prop} not found. Did you forget to add it to the store?`);
+				}
+
 				// Form can be used inside your components as so:
 				// <YourComponent {...this.forms.formName.propName.fields} />
-				forms[name].fields[prop] = formProp.connector(this.props.form.fields[prop], done);
+				forms[name].fields[prop] = connector(this.props.form.fields[prop], done);
 				forms[name].fields[prop].errors = this.props.form.errors[prop] || [];
 			}
 
@@ -48,13 +59,17 @@ export default function(Component, name, store, formProps = {}) {
 			return (name) => {
 				const validationData = {};
 				const form = forms[name].fields;
-				for (const prop in formProps) {
+				for (const prop in formProps.fields) {
 					validationData[prop] = {
 						value: form[prop].value,
-						validators: formProps[prop].validators || []
+						validators: formProps.fields[prop].validators || []
 					};
 				}
+
 				return {
+					clean: formProps.clean || function(data) {
+						return data;
+					},
 					fields: {...validationData},
 					store
 				};

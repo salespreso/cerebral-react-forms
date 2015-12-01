@@ -1,42 +1,78 @@
+function validateInput(field, value) {
+	let cleanData;
+	let errorData = [];
+
+	let {validators} = field;
+
+	if (typeof validators === "function") {
+		validators = validators();
+	}
+
+	const responses = validators.map((validator) => {
+		return validator(value);
+	});
+	const errors = [];
+	for (const response of responses) {
+		if (response === true) {
+			cleanData = value;
+		} else if (typeof response === "string") {
+			errors.push(response);
+		}
+	}
+	if (errors.length) {
+		errorData = errors;
+	}
+
+	return {
+		value: cleanData,
+		errors: errorData
+	};
+}
+
 export const setStateValue = (input, state) => {
-	const {store, value} = input;
-	state.set(store, value);
+	const {store, name, value} = input;
+	state.set([...store, "fields", name], value);
 };
 
 export const validateForm = (input, state, output) => {
-	const cleanData = {};
-	const errorData = {};
-	const {fields, store} = input;
+	let cleanData = {};
+	let errorData = {};
+	const {fields, store, clean} = input;
 
+	// Clean fields separately
 	for (const field in fields) {
 		const {value} = fields[field];
-		let {validators} = fields[field];
 
-		if (typeof validators === "function") {
-			validators = validators();
+		const {
+			value: fieldValue,
+			errors: fieldErrors
+		} = validateInput(fields[field], value);
+
+		if (typeof fieldValue !== "undefined") {
+			cleanData[field] = value;
 		}
 
-		const responses = validators.map((validator) => {
-			return validator(value);
-		});
-		const errors = [];
-		for (const response of responses) {
-			if (response === true) {
-				cleanData[field] = value;
-			} else if (typeof response === "string") {
-				errors.push(response);
-			}
-		}
-		if (errors.length) {
-			errorData[field] = errors;
+		if (fieldErrors.length) {
+			errorData[field] = fieldErrors;
 		}
 	}
+
+	// Run the clean function. This can modify the validated data,
+	// and also has a chance to return errors
+	const {fields: cleanFields, errors: cleanErrors} = clean({
+		fields: cleanData,
+		errors: errorData
+	});
+
+	cleanData = Object.assign(cleanData, cleanFields);
+	errorData = Object.assign(errorData, cleanErrors);
 
 	const data = {
 		...errorData,
 		...cleanData,
 		fields: undefined,
-		store: undefined
+		store: undefined,
+		clean: undefined
 	};
 
 	if (Object.keys(errorData).length) {
