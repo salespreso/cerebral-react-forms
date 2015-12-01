@@ -17,7 +17,7 @@ export default function(Component, name, store, formProps = {}) {
 			return (value) => {
 				// Set signal here
 				signals.formDriver.stateChanged({
-					store: [...store, "fields", name],
+					store,
 					name,
 					value
 				});
