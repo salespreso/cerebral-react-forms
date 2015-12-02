@@ -1,13 +1,89 @@
+/**
+ * Higher Order Component to use on React classes for easy auto
+ * injection of form helpers (state/validation)
+ * @example
+```javascript
+import Form from "sp-react-forms/Hoc";
+
+class MyForm extends React.Component {
+ // ...
+}
+
+export default Form(MyForm, "test", ["testapp", "form"], {
+	fields: {
+		password1: {
+			connector: InputConnector(),
+			validators: [NotBlankValidator]
+		},
+		password2: {
+			connector: InputConnector(),
+			validators: [NotBlankValidator]
+		}
+	},
+	clean(data) {
+		if (data.fields.password1 !== data.fields.password2) {
+			data.errors.password1 = ["Password1 must match password2"];
+		}
+		return data;
+	}
+});
+ ```
+ * @module react-forms
+ * @class hoc
+ */
 import React from "react";
 import {Decorator as Cerebral} from "cerebral-react";
 
-// Store data has to look like the following:
-// {
-// 	fields: {
-// 		foo: "foo"
-// 	},
-// 	errors: {}
-// }
+/**
+ Contains the value/update functions from the connector. Alleviates writing
+ similar code for updating the state.
+ @example
+ ```javascript
+ // If your connector is the following for a particular field:
+ function InputConnector() {
+	return (data, done) => {
+		return {
+			value: data,
+			onChange: (value) => {
+				done(value);
+			}
+		};
+	};
+ }
+
+ // You can access these values like so:
+ this.props.forms.yourForm.yourField
+
+ // Which will contain:
+ { value: data, onChange={...} }
+ ```
+
+ In this example, when `onChange` is called will be passed to the connector, which in turn
+ fires a signal to update the store.
+
+ `value` will contain data from the state - this stop a lot of boilerplate having to be written.
+ @property this.props.forms
+ */
+
+/**
+ This gets the validators and values for all of your forms fields, making it easy to
+ pass to your signals. Generally this gets passed to a signal where the first action
+ is the `validateForm` action in `sp-react-forms/actions`
+ @method this.props.getFormValidationData
+ @example
+ ```javascript
+ ...
+
+ handleSubmit(e) {
+	e.preventDefault();
+		const data = this.props.getFormValidationData("test");
+		this.props.signals.formSubmitted(data);
+	}
+
+ ...
+ ```
+ */
+
 export default function(Component, name, store, formProps = {}) {
 	@Cerebral({ form: store })
 	class Hoc extends React.Component {

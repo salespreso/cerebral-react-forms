@@ -1,3 +1,13 @@
+/**
+ * Action methods to be used with cerebral and cerebral-react
+ * @class actions
+ * @module react-forms
+ * @example
+ * ```javascript
+ * import {setStateValue, validateForm} from "sp-react-forms/actions";
+ * ```
+ */
+
 function validateInput(field, value) {
 	let cleanData;
 	let errorData = [];
@@ -29,11 +39,69 @@ function validateInput(field, value) {
 	};
 }
 
+/**
+ * A cerebral action for updating signals. Generally only
+ * needed to be used internally by the higher order component
+ * in this library. It is called on changing a single input.
+ *
+ * Its input requires:
+ * @method setStateValue
+ * @param {String[]} store - A list path the form in your store.
+ * Ie: ["path", "to", "form"]
+ * @param {String} name - The name of input being updated
+ * @param {Any} value - Any serializable value (number, string, boolean, etc)
+ * to update in the store
+ * @example
+ ```javascript
+ import {setStateValue} from "sp-react-forms/actions";
+ ```
+ */
 export const setStateValue = (input, state) => {
 	const {store, name, value} = input;
 	state.set([...store, "fields", name], value);
 };
 
+/**
+ * A cerebral action for validating your react forms. Generally
+ * this will be the first action in your signal, as it's used
+ * to validate all of your forms inputs and branch off as either
+ * a success or an error.
+ *
+ * <b>Note</b>: you will not need to generally worry about passing the input
+ * data to this action. Instead use the `getFormValidationData` method
+ * that you get from using the Higher Order Component or decorator.
+ *
+ * Its input requires:
+ * @method validateForm
+ * @param {Object} fields - An object containing fields, which in turn contains
+ * the validations for each field.
+ * @param {String[]} store - The path to the form in the store, eg: ["path", "to", "form"]
+ * @param {Function} clean - The clean function to pass our data through. This can return
+ * errors and modify the error messages and clean data as needed.
+ * @example
+ ```javascript
+ // Your signal.js
+ import {validateForm} from "sp-react-forms/actions";
+
+ export default [
+	validateForm, {
+		success: [...],
+		error: [...]
+	}
+ ];
+
+ // In your form component, using the HOC or decorator
+ ...
+
+ handleSubmit(e) {
+	e.preventDefault();
+	const data = this.props.getFormValidationData("test");
+	this.props.signals.formSubmitted(data);
+ }
+
+ ...
+ ```
+ */
 export const validateForm = (input, state, output) => {
 	let cleanData = {};
 	let errorData = {};

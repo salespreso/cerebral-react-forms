@@ -8,7 +8,7 @@ import {Container} from "cerebral-react";
 import {Register, ApplicationRunner} from "sp-application";
 
 import Layout from "./components/Layout";
-import signal from "lib/signals";
+import signal from "lib/signal";
 
 let controller;
 
