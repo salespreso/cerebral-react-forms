@@ -18,19 +18,23 @@ function validateInput(field, value) {
 		validators = validators();
 	}
 
-	const responses = validators.map((validator) => {
-		return validator(value);
-	});
-	const errors = [];
-	for (const response of responses) {
-		if (response === true) {
-			cleanData = value;
-		} else if (typeof response === "string") {
-			errors.push(response);
+	if (validators.length) {
+		const responses = validators.map((validator) => {
+			return validator(value);
+		});
+		const errors = [];
+		for (const response of responses) {
+			if (response === true) {
+				cleanData = value;
+			} else if (typeof response === "string") {
+				errors.push(response);
+			}
 		}
-	}
-	if (errors.length) {
-		errorData = errors;
+		if (errors.length) {
+			errorData = errors;
+		}
+	} else {
+		cleanData = value;
 	}
 
 	return {
