@@ -31,6 +31,7 @@ export default Form(MyForm, "test", ["testapp", "form"], {
  * @module react-forms
  * @class hoc
  */
+import _ from "lodash";
 import React from "react";
 import {Decorator as Cerebral} from "cerebral-react";
 
@@ -136,8 +137,11 @@ export default function(Component, name, store, formProps = {}) {
 				const validationData = {};
 				const form = forms[name].fields;
 				for (const prop in formProps.fields) {
+					let data = _.omit(form[prop], _.isFunction);
+					data = _.omit(data, "errors");
+
 					validationData[prop] = {
-						value: form[prop].value,
+						value: form[prop].getValue(data),
 						validators: formProps.fields[prop].validators || []
 					};
 				}

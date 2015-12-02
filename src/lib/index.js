@@ -51,6 +51,11 @@
  	return (data, done) => {
  		return {
  			value: data,
+			// To determine what value will be passed to our validator, modify the object
+			// get it
+			getValue({ value }) {
+				return value;
+			},
  			onChange: (e) => {
  				done(e.target.value);
  			}

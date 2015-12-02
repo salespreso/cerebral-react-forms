@@ -22,6 +22,9 @@ function InputConnector() {
 	return (data, done) => {
 		return {
 			value: data,
+			getValue({ value }) {
+				return value;
+			},
 			onChange: (value) => {
 				done(value);
 			}
