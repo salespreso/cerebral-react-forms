@@ -27,7 +27,7 @@ function validateInput(field, value) {
 		for (const response of responses) {
 			if (response === true) {
 				cleanData = value;
-			} else if (typeof response === "string") {
+			} else {
 				errors.push(response);
 			}
 		}

@@ -126,6 +126,30 @@ context("Actions", function() {
 			assert.isTrue(spy.calledWith({ password: "password" }));
 		}));
 
+		it("should allow errors to be returned as any type (SP-926)", sinon.test(function() {
+			const spy = this.spy(output, "error");
+
+			const fields = {
+				password: {
+					value: "password",
+					validators: [
+						function() {
+							return { message: "error" };
+						}
+					]
+				}
+			};
+
+			const input = {
+				fields,
+				store: [],
+				clean: data => data
+			};
+
+			validateForm(input, state, output);
+			assert.isTrue(spy.calledWith({ password: [{ message: "error" }] }));
+		}));
+
 		it("should return the fields and their error messages on failure", sinon.test(function() {
 			const spy = this.spy(output, "error");
 
