@@ -140,27 +140,19 @@ export const validateForm = (input, state, output) => {
 	cleanData = Object.assign(cleanData, cleanFields);
 	errorData = Object.assign(errorData, cleanErrors);
 
-	const data = {
-		...errorData,
-		...cleanData,
-		fields: undefined,
-		store: undefined,
-		clean: undefined
-	};
-
 	if (Object.keys(errorData).length) {
-		output.error(data);
 		state.merge(store, {
 			errors: errorData,
 			isSubmitted: true,
 			hasErrors: true
 		});
+		output.error(errorData);
 	} else {
 		state.merge(store, {
 			errors: {},
 			isSubmitted: true,
 			hasErrors: false
 		});
-		output.success(data);
+		output.success(cleanData);
 	}
 };
