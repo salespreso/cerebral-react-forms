@@ -174,6 +174,37 @@ context("Actions", function() {
 			assert.isTrue(spy.calledWith({ password: ["error"] }));
 		}));
 
+		it("the clean method should have access to all current fields and error values", sinon.test(function() {
+			const cleanApi = { clean: data => data };
+			const spy = this.spy(cleanApi, "clean");
+
+			const fields = {
+				password1: {
+					value: "password"
+				},
+				password2: {
+					value: "",
+					validators: [() => "error"]
+				}
+			};
+			const input = {
+				fields,
+				store: [],
+				clean: cleanApi.clean
+			};
+
+			validateForm(input, state, output);
+			assert.isTrue(spy.calledWith({
+				fields: {
+					password1: "password",
+					password2: ""
+				},
+				errors: {
+					password2: ["error"]
+				}
+			}));
+		}));
+
 		it("should allow errors to be added using the clean method", sinon.test(function() {
 			const spy = this.spy(output, "error");
 			const fields = {};

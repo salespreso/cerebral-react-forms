@@ -111,6 +111,7 @@ export const validateForm = (input, state, output) => {
 	let cleanData = {};
 	let errorData = {};
 	const {fields, store, clean} = input;
+	const fieldData = {};
 
 	// Clean fields separately
 	for (const field in fields) {
@@ -128,12 +129,14 @@ export const validateForm = (input, state, output) => {
 		if (fieldErrors.length) {
 			errorData[field] = fieldErrors;
 		}
+
+		fieldData[field] = value;
 	}
 
 	// Run the clean function. This can modify the validated data,
 	// and also has a chance to return errors
 	const {fields: cleanFields, errors: cleanErrors} = clean({
-		fields: cleanData,
+		fields: fieldData,
 		errors: errorData
 	});
 
