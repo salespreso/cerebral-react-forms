@@ -103,6 +103,11 @@ export default function(Component, name, store, formProps = {}) {
 
 		generateFormProps() {
 			const forms = this.props.forms || {};
+
+			if (typeof this.props.form === "undefined") {
+				throw new Error(`Can not find a form at path '${store.join(".")}'`);
+			}
+
 			forms[name] = {
 				isSubmitted: this.props.form.isSubmitted || false,
 				fields: {},
