@@ -17,7 +17,7 @@
     "git-hooks": "^1.0.2",
     "gulp": "^3.9.0",
     "jspm": "^0.16.12",
-    "karma-config": "^1.0.0",
+    "karma-config": "^1.0.1",
     "salespreso-gulp": "^4.1.1",
     "yuidoc2md": "^0.8.2"
   },
