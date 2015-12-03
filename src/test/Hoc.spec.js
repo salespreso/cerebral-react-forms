@@ -27,4 +27,55 @@ context("Hoc", function() {
 
 		assert.throws(root, `Can not find a form at path 'path.to.form'`);
 	});
+	it("should throw an error if the form fields does not exist", function() {
+		class TestForm extends React.Component {
+			render() {
+				return <div/>;
+			}
+		}
+
+		const controller = createController({
+			form: {
+				errors: {}
+			}
+		});
+
+		const Form = Hoc(TestForm, "myForm", ["form"], {});
+		const render = () => {
+			const root = TestUtils.renderIntoDocument(
+				<Container controller={controller}>
+					<Form />
+				</Container>
+			);
+			TestUtils.findRenderedComponentWithType(root, TestForm);
+		};
+
+		assert.throws(render, `Can not find stored value 'form.fields'`);
+	});
+
+	it("should throw an error if the form errors does not exist", function() {
+		class TestForm extends React.Component {
+			render() {
+				return <div/>;
+			}
+		}
+
+		const controller = createController({
+			form: {
+				fields: {}
+			}
+		});
+
+		const Form = Hoc(TestForm, "myForm", ["form"], {});
+		const render = () => {
+			const root = TestUtils.renderIntoDocument(
+					<Container controller={controller}>
+					<Form />
+					</Container>
+			);
+			TestUtils.findRenderedComponentWithType(root, TestForm);
+		};
+
+		assert.throws(render, `Can not find stored value 'form.errors'`);
+	});
 });

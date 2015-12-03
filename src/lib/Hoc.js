@@ -103,9 +103,16 @@ export default function(Component, name, store, formProps = {}) {
 
 		generateFormProps() {
 			const forms = this.props.forms || {};
-
 			if (typeof this.props.form === "undefined") {
 				throw new Error(`Can not find a form at path '${store.join(".")}'`);
+			}
+
+			if (typeof this.props.form.fields === "undefined") {
+				throw new Error(`Can not find stored value '${[...store, "fields"].join(".")}'`);
+			}
+
+			if (typeof this.props.form.errors === "undefined") {
+				throw new Error(`Can not find stored value '${[...store, "errors"].join(".")}'`);
 			}
 
 			forms[name] = {
