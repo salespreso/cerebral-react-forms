@@ -12,7 +12,7 @@
   },
   "keywords": [],
   "devDependencies": {
-    "eslint-config-salespreso": "^0.1.7",
+    "eslint-config-salespreso": "^0.1.8",
     "get-port": "^1.0.0",
     "git-hooks": "^1.0.2",
     "gulp": "^3.9.0",
