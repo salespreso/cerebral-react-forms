@@ -13,6 +13,7 @@ function validateInput(field, value) {
 	let errorData = [];
 
 	let {validators} = field;
+	validators = validators || [];
 
 	if (typeof validators === "function") {
 		validators = validators();

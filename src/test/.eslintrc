@@ -1,0 +1,9 @@
+{
+	"extends": "eslint-config-salespreso/base",
+	"env": {
+		"mocha": true
+	},
+	"globals": {
+		"assert": true
+	}
+}

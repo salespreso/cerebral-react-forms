@@ -7,7 +7,7 @@ var karma = window.__karma__;
 // Find all the karma tests that we've added
 let files = _.chain(karma.files).map(function(id, file) { return file; });
 let tests = files.filter(function(file) {
-  return /^\/base\/test\/.*\.spec\.js$/.test(file);
+  return /^\/base\/src\/test\/.*\.spec\.js$/.test(file);
 }).value();
 
 // Manually import each test with systemjs
@@ -21,4 +21,3 @@ Promise.map(tests, function(test) {
 	// Finally manually boot up the test.
 	karma.realStart();
 });
-

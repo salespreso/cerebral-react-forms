@@ -146,7 +146,7 @@
  @module react-forms
  @main react-forms
  */
-export * as decorator from "./decorator";
-export * as Hoc from "./Hoc";
+export {default as decorator} from "./decorator";
+export {default as Hoc} from "./Hoc";
 export * as actions from "./actions";
-export * as signal from "./signal";
+export {default as signal} from "./signal";

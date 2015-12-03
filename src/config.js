@@ -18,6 +18,7 @@ System.config({
     "ampersand-state": "npm:ampersand-state@4.8.2",
     "babel": "npm:babel-core@5.8.34",
     "babel-runtime": "npm:babel-runtime@5.8.34",
+    "bluebird": "npm:bluebird@3.0.6",
     "cerebral": "npm:cerebral@0.26.1",
     "cerebral-baobab": "npm:cerebral-baobab@0.4.3",
     "cerebral-react": "npm:cerebral-react@0.7.0",
@@ -26,6 +27,7 @@ System.config({
     "lodash": "npm:lodash@3.10.1",
     "react": "npm:react@0.14.3",
     "react-dom": "npm:react-dom@0.14.3",
+    "sinon": "npm:sinon@1.17.2",
     "sp-application": "npm:sp-application@1.1.1",
     "sp-components": "npm:sp-components@0.0.25",
     "github:jspm/nodelibs-assert@0.1.0": {
@@ -156,6 +158,9 @@ System.config({
       "emmett": "npm:emmett@3.1.1"
     },
     "npm:bluebird@2.10.2": {
+      "process": "github:jspm/nodelibs-process@0.1.2"
+    },
+    "npm:bluebird@3.0.6": {
       "process": "github:jspm/nodelibs-process@0.1.2"
     },
     "npm:bows@1.4.8": {
@@ -360,6 +365,10 @@ System.config({
     "npm:find-root@0.1.1": {
       "fs": "github:jspm/nodelibs-fs@0.1.2",
       "path": "github:jspm/nodelibs-path@0.1.0"
+    },
+    "npm:formatio@1.1.1": {
+      "process": "github:jspm/nodelibs-process@0.1.2",
+      "samsam": "npm:samsam@1.1.2"
     },
     "npm:graceful-readlink@1.0.1": {
       "fs": "github:jspm/nodelibs-fs@0.1.2"
@@ -659,6 +668,13 @@ System.config({
       "fs": "github:jspm/nodelibs-fs@0.1.2",
       "inherits": "npm:inherits@2.0.1",
       "process": "github:jspm/nodelibs-process@0.1.2"
+    },
+    "npm:sinon@1.17.2": {
+      "formatio": "npm:formatio@1.1.1",
+      "lolex": "npm:lolex@1.3.2",
+      "process": "github:jspm/nodelibs-process@0.1.2",
+      "samsam": "npm:samsam@1.1.2",
+      "util": "npm:util@0.10.3"
     },
     "npm:source-map@0.1.31": {
       "amdefine": "npm:amdefine@1.0.0",

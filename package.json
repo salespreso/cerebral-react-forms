@@ -34,6 +34,7 @@
     "devDependencies": {
       "babel": "npm:babel-core@^5.8.24",
       "babel-runtime": "npm:babel-runtime@^5.8.24",
+      "bluebird": "npm:bluebird@^3.0.6",
       "cerebral": "npm:cerebral@^0.26.1",
       "cerebral-baobab": "npm:cerebral-baobab@^0.4.3",
       "cerebral-react": "npm:cerebral-react@^0.7.0",
@@ -41,6 +42,7 @@
       "core-js": "npm:core-js@^1.1.4",
       "react": "npm:react@^0.14.3",
       "react-dom": "npm:react-dom@^0.14.3",
+      "sinon": "npm:sinon@^1.17.2",
       "sp-application": "npm:sp-application@^1.1.1",
       "sp-components": "npm:sp-components@^0.0.25"
     }
