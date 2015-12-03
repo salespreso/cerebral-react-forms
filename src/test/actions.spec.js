@@ -1,5 +1,5 @@
 import sinon from "sinon";
-import {actions} from "src/lib/index";
+import {actions} from "../lib/index";
 
 const {validateForm, setStateValue} = actions;
 
@@ -203,25 +203,6 @@ context("Actions", function() {
 					password2: ["error"]
 				}
 			}));
-		}));
-
-		it("should allow errors to be added using the clean method", sinon.test(function() {
-			const spy = this.spy(output, "error");
-			const fields = {};
-			const input = {
-				fields,
-				store: [],
-				clean: () => {
-					return {
-						errors: {
-							all: ["error"]
-						}
-					};
-				}
-			};
-
-			validateForm(input, state, output);
-			assert.isTrue(spy.calledWith({ all: ["error"] }));
 		}));
 
 		it("should allow errors to be added using the clean method", sinon.test(function() {
