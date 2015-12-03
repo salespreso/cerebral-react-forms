@@ -15,18 +15,69 @@ function createController(store = {}) {
 
 context("Hoc", function() {
 	it("should throw an error if a store does not exist", function() {
-		const TestForm = () => <div></div>;
+		class TestForm extends React.Component {
+			render() {
+				return <div/>;
+			}
+		}
 		const controller = createController();
 		const Form = Hoc(TestForm, "myForm", ["path", "to", "form"], {});
-		const myForm = <Form />;
 		const root = () => TestUtils.renderIntoDocument(
 			<Container controller={controller}>
-				{myForm}
+				<Form />
 			</Container>
 		);
 
 		assert.throws(root, `Can not find a form at path 'path.to.form'`);
 	});
+
+	it("should contain the fields connector values as a prop", function() {
+		function TestConnector() {
+			return (data, done) => {
+				return {
+					value: data,
+					getValue: ({ value }) => value,
+					onChange: (value) => done(value)
+				};
+			};
+		}
+
+		class TestForm extends React.Component {
+			render() {
+				return <div/>;
+			}
+		}
+
+		const connector = TestConnector();
+
+		const controller = createController({
+			form: {
+				fields: {
+					testField: "myValue"
+				},
+				errors: {}
+			}
+		});
+
+		const Form = Hoc(TestForm, "myForm", ["form"], {
+			fields: {
+				testField: connector
+			}
+		});
+
+		const root = TestUtils.renderIntoDocument(
+			<Container controller={controller}>
+				<Form />
+			</Container>
+		);
+
+		const myForm = TestUtils.findRenderedComponentWithType(root, TestForm);
+		const testField = myForm.props.forms.myForm.fields.testField;
+		assert.equal(testField.value, "myValue");
+		assert.isFunction(testField.onChange);
+		assert.isArray(testField.errors);
+	});
+
 	it("should throw an error if the form fields does not exist", function() {
 		class TestForm extends React.Component {
 			render() {
