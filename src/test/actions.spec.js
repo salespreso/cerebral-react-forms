@@ -12,7 +12,7 @@ output.success = () => {};
 output.error = () => {};
 
 context("Actions", function() {
-	describe.skip("#validateForm", function() {
+	describe("#validateForm", function() {
 		it("should succeed with no validations", sinon.test(function() {
 			const spy = this.spy(output, "success");
 
