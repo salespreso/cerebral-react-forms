@@ -145,17 +145,16 @@ export const validateForm = (input, state, output) => {
 
 	if (Object.keys(errorData).length) {
 		state.merge(store, {
-			errors: errorData,
 			isSubmitted: true,
 			hasErrors: true
 		});
-		output.error(errorData);
+		output.error({ errors: errorData });
 	} else {
 		state.merge(store, {
 			errors: {},
 			isSubmitted: true,
 			hasErrors: false
 		});
-		output.success(cleanData);
+		output.success({ cleanData });
 	}
 };
