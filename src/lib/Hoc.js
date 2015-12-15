@@ -88,12 +88,17 @@ import {Decorator as Cerebral} from "cerebral-react";
 export default function(Component, name, store, formProps = {}) {
 	@Cerebral({ form: store })
 	class Hoc extends React.Component {
+		constructor(props) {
+			super(props);
+			this.forms = this.generateFormProps();
+		}
+
 		signalFactory(name) {
 			const {signals} = this.props;
 
 			return (value) => {
 				// Set signal here
-				signals.formDriver.stateChanged({
+				signals.formDriver.stateChanged.sync({
 					store,
 					name,
 					value
@@ -169,7 +174,14 @@ export default function(Component, name, store, formProps = {}) {
 		}
 
 		render() {
-			const forms = this.generateFormProps();
+			const forms = _.cloneDeep(this.forms);
+			for (const field in forms[name].fields) {
+				if (typeof forms[name].errors[field] === "undefined") {
+					forms[name].errors[field] = [];
+				}
+				_.extend(forms[name].fields[field], this.props.form.fields[field]);
+				_.extend(forms[name].errors[field], this.props.form.errors[field]);
+			}
 
 			const {
 				// Don't pass our cerebral values to the component
