@@ -97,6 +97,10 @@ export default function(Component, name, store, formProps = {}) {
 			const {signals} = this.props;
 
 			return (value) => {
+				if (!_.isObject(value) || _.isArray(value)) {
+					throw new Error(`done must be called with an object. Received '${value}'`);
+				}
+
 				// Set signal here
 				signals.formDriver.stateChanged.sync({
 					store,
@@ -132,6 +136,7 @@ export default function(Component, name, store, formProps = {}) {
 
 				let connector = formProp;
 				if (typeof connector === "object") {
+
 					connector = formProp.connector;
 				}
 
