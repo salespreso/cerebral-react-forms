@@ -85,12 +85,15 @@ import {Decorator as Cerebral} from "cerebral-react";
  ```
  */
 
-export default function(Component, name, store, formProps = {}) {
+export default function(Component, store, formProps = {}) {
 	@Cerebral({ form: store })
 	class Hoc extends React.Component {
 		constructor(props) {
 			super(props);
-			this.forms = this.generateFormProps();
+
+			// Our form, with signals attached to the change functions,
+			// some usage checks, etc.
+			this.form = this.generateFormProps();
 		}
 
 		signalFactory(name) {
@@ -111,7 +114,6 @@ export default function(Component, name, store, formProps = {}) {
 		}
 
 		generateFormProps() {
-			const forms = this.props.forms || {};
 			if (typeof this.props.form === "undefined") {
 				throw new Error(`Can not find a form at path '${store.join(".")}'`);
 			}
@@ -124,7 +126,7 @@ export default function(Component, name, store, formProps = {}) {
 				throw new Error(`Can not find stored value '${[...store, "errors"].join(".")}'`);
 			}
 
-			forms[name] = {
+			const form = {
 				isSubmitted: this.props.form.isSubmitted || false,
 				fields: {},
 				errors: {}
@@ -146,12 +148,11 @@ export default function(Component, name, store, formProps = {}) {
 
 				// Form can be used inside your components as so:
 				// <YourComponent {...this.forms.formName.propName.fields} />
-				forms[name].fields[prop] = connector(this.props.form.fields[prop], done);
-				forms[name].fields[prop].errors = this.props.form.errors[prop] || [];
+				form.fields[prop] = connector(this.props.form.fields[prop], done);
+				form.fields[prop].errors = this.props.form.errors[prop] || [];
 			}
 
-			forms[name].errors = this.props.form.errors;
-			return forms;
+			return form;
 		}
 
 		getValidationData(forms) {
@@ -179,26 +180,24 @@ export default function(Component, name, store, formProps = {}) {
 		}
 
 		render() {
-			const forms = _.cloneDeep(this.forms);
-			for (const field in forms[name].fields) {
-				if (typeof forms[name].errors[field] === "undefined") {
-					forms[name].errors[field] = [];
+			for (const field in this.form.fields) {
+				if (typeof this.form.errors[field] === "undefined") {
+					this.form.errors[field] = [];
 				}
-				_.extend(forms[name].fields[field], this.props.form.fields[field]);
-				_.extend(forms[name].errors[field], this.props.form.errors[field]);
+				_.extend(this.form.fields[field], this.props.form.fields[field]);
+				_.extend(this.form.errors[field], this.props.form.errors[field]);
 			}
 
 			const {
 				// Don't pass our cerebral values to the component
-				form,
 				get,
+				form,
 				...other
 			} = this.props;
 
 			const props = {
 				...other,
-				forms,
-				getFormValidationData: this.getValidationData(forms)
+				form: this.form
 			};
 
 

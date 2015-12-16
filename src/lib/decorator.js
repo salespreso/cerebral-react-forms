@@ -42,8 +42,8 @@ class MyForm extends React.Component {
 }
 ```
  */
-export default function(name, store, props = {}) {
+export default function(store, props = {}) {
 	return function(Component) {
-		return Hoc(Component, name, store, props);
+		return Hoc(Component, store, props);
 	};
 }

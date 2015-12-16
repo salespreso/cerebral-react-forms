@@ -21,7 +21,7 @@ context("Hoc", function() {
 			}
 		}
 		const controller = createController();
-		const Form = Hoc(TestForm, "myForm", ["path", "to", "form"], {});
+		const Form = Hoc(TestForm, ["path", "to", "form"], {});
 		const root = () => TestUtils.renderIntoDocument(
 			<Container controller={controller}>
 				<Form />
@@ -59,7 +59,7 @@ context("Hoc", function() {
 			}
 		});
 
-		const Form = Hoc(TestForm, "myForm", ["form"], {
+		const Form = Hoc(TestForm, ["form"], {
 			fields: {
 				testField: connector
 			}
@@ -72,7 +72,7 @@ context("Hoc", function() {
 		);
 
 		const myForm = TestUtils.findRenderedComponentWithType(root, TestForm);
-		const testField = myForm.props.forms.myForm.fields.testField;
+		const testField = myForm.props.form.fields.testField;
 		assert.equal(testField.value, "myValue");
 		assert.isFunction(testField.onChange);
 		assert.isArray(testField.errors);
@@ -91,7 +91,7 @@ context("Hoc", function() {
 			}
 		});
 
-		const Form = Hoc(TestForm, "myForm", ["form"], {});
+		const Form = Hoc(TestForm, ["form"], {});
 		const render = () => {
 			const root = TestUtils.renderIntoDocument(
 				<Container controller={controller}>
@@ -117,12 +117,12 @@ context("Hoc", function() {
 			}
 		});
 
-		const Form = Hoc(TestForm, "myForm", ["form"], {});
+		const Form = Hoc(TestForm, ["form"], {});
 		const render = () => {
 			const root = TestUtils.renderIntoDocument(
-					<Container controller={controller}>
+				<Container controller={controller}>
 					<Form />
-					</Container>
+				</Container>
 			);
 			TestUtils.findRenderedComponentWithType(root, TestForm);
 		};

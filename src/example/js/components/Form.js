@@ -32,7 +32,7 @@ function InputConnector() {
 	};
 }
 
-@form("test", ["testapp", "form"], {
+@form(["testapp", "form"], {
 	fields: {
 		password1: {
 			connector: InputConnector(),
@@ -63,12 +63,12 @@ function InputConnector() {
 class Layout extends React.Component {
 	handleSubmit(e) {
 		e.preventDefault();
-		const data = this.props.getFormValidationData("test");
+		const data = this.props.getFormValidationData();
 		this.props.signals.testapp.formSubmitted(data);
 	}
 
 	handleChange(value) {
-		const form = this.props.forms.test;
+		const form = this.props.form;
 		// An example of how to override the change function. Easy way
 		// to do asyncronous actions
 		form.fields.age.onChange(value);
@@ -81,7 +81,7 @@ class Layout extends React.Component {
 	}
 
 	render() {
-		const form = this.props.forms.test;
+		const form = this.props.form;
 
 		const errors = [];
 		for (const key in form.errors) {
