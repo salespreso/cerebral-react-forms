@@ -123,7 +123,7 @@ context("Actions", function() {
 			};
 
 			validateForm(input, state, output);
-			assert.isTrue(spy.calledWith({ password: "password" }));
+			assert.isTrue(spy.calledWith({ cleanData: { password: "password" }}));
 		}));
 
 		it("should allow errors to be returned as any type (SP-926)", sinon.test(function() {
@@ -147,7 +147,7 @@ context("Actions", function() {
 			};
 
 			validateForm(input, state, output);
-			assert.isTrue(spy.calledWith({ password: [{ message: "error" }] }));
+			assert.isTrue(spy.calledWith({ errors: { password: [{ message: "error" }] }}));
 		}));
 
 		it("should return the fields and their error messages on failure", sinon.test(function() {
@@ -171,7 +171,7 @@ context("Actions", function() {
 			};
 
 			validateForm(input, state, output);
-			assert.isTrue(spy.calledWith({ password: ["error"] }));
+			assert.isTrue(spy.calledWith({ errors: { password: ["error"] }}));
 		}));
 
 		it("the clean method should have access to all current fields and error values", sinon.test(function() {
@@ -221,7 +221,7 @@ context("Actions", function() {
 			};
 
 			validateForm(input, state, output);
-			assert.isTrue(spy.calledWith({ all: ["error"] }));
+			assert.isTrue(spy.calledWith({ errors: { all: ["error"] }}));
 		}));
 
 		it("should allow values to be modified in the clean method", sinon.test(function() {
@@ -242,7 +242,7 @@ context("Actions", function() {
 			};
 
 			validateForm(input, state, output);
-			assert.isTrue(spy.calledWith({ password: "password1" }));
+			assert.isTrue(spy.calledWith({ cleanData: { password: "password1" }}));
 		}));
 	});
 

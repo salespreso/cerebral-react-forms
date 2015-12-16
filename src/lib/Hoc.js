@@ -44,9 +44,9 @@ import {Decorator as Cerebral} from "cerebral-react";
  function InputConnector() {
 	return (data, done) => {
 		return {
-			value: data,
+			value: data.value,
 			onChange: (value) => {
-				done(value);
+				done({ value });
 			}
 		};
 	};

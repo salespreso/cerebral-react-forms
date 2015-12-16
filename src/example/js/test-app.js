@@ -26,10 +26,10 @@ export default class TestApp {
 		return {
 			form: {
 				fields: {
-					password1: "",
-					password2: "",
-					name: "",
-					age: "10"
+					password1: { value: "" },
+					password2: { value: "" },
+					name: { value: "" },
+					age: { value: "10" }
 				},
 				errors: {}
 			}

@@ -35,9 +35,9 @@ context("Hoc", function() {
 		function TestConnector() {
 			return (data, done) => {
 				return {
-					value: data,
+					value: data.value,
 					getValue: ({ value }) => value,
-					onChange: (value) => done(value)
+					onChange: (value) => done({ value })
 				};
 			};
 		}
@@ -53,7 +53,7 @@ context("Hoc", function() {
 		const controller = createController({
 			form: {
 				fields: {
-					testField: "myValue"
+					testField: { value: "myValue" }
 				},
 				errors: {}
 			}

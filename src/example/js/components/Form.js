@@ -21,12 +21,12 @@ const IntegerHigherThan = function(num) {
 function InputConnector() {
 	return (data, done) => {
 		return {
-			value: data,
+			value: data.value,
 			getValue({ value }) {
 				return value;
 			},
 			onChange: (value) => {
-				done(value);
+				done({ value });
 			}
 		};
 	};

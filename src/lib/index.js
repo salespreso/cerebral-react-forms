@@ -50,14 +50,14 @@
  function InputConnector() {
  	return (data, done) => {
  		return {
- 			value: data,
+ 			value: data.value,
 			// To determine what value will be passed to our validator, modify the object
 			// get it
 			getValue({ value }) {
 				return value;
 			},
  			onChange: (e) => {
- 				done(e.target.value);
+ 				done({ value: e.target.value });
  			}
  		};
  	};
