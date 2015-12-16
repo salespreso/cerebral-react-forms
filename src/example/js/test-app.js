@@ -1,6 +1,6 @@
 import {application} from "sp-application/decorators";
 import setPage from "./factories/set-page";
-import {validateForm} from "lib/actions";
+import {validateForm, setFormErrors} from "lib/actions";
 
 @application()
 export default class TestApp {
@@ -16,7 +16,7 @@ export default class TestApp {
 			formSubmitted: [
 				validateForm, {
 					success: [],
-					error: []
+					error: [setFormErrors]
 				}
 			]
 		};

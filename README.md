@@ -149,6 +149,7 @@ export default MyForm;
   - [`actions`](#actions)
     - [`.setStateValue(String[] store, String name, Any value)`](#setstatevaluestring-store-string-name-any-value)
     - [`.validateForm(Object fields, String[] store, Function clean)`](#validateformobject-fields-string-store-function-clean)
+    - [`.setFormErrors(String[] store, Object errors)`](#setformerrorsstring-store-object-errors)
   - [`decorators`](#decorators)
     - [`default`](#default)
   - [`signal`](#signal)
@@ -237,7 +238,11 @@ handleSubmit(e) {
 > Action methods to be used with cerebral and cerebral-react
 
 ```javascript
-import {setStateValue, validateForm} from "sp-react-forms/actions";
+import {
+  setStateValue,
+  validateForm,
+  setFormErrors
+} from "sp-react-forms/actions";
 ```
 
 ##### **Methods**
@@ -353,6 +358,51 @@ handleSubmit(e) {
 }
 
 ...
+```
+<br/>
+#### `.setFormErrors(String[] store, Object errors)`
+Use after an error condition after validation fails, either by
+using the validate action in this lib, or any other action that
+affects the "errors" field. It expects the input to look like:
+```javascript
+{
+  fieldname1: ["error messages", "go", "here"],
+  fieldname2: ["another error message"]
+}
+```
+Its input requires:
+
+<br/>
+
+###### **Params**
+
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Parameter</th>
+      <th width="70%">Description</th>
+    </tr>
+  </thead>
+  <tbody>
+  <tr>
+    <td>String[]</td>
+    <td><code>store</code></td>
+    <td>A list path the form in your store.
+Ie: [&quot;path&quot;, &quot;to&quot;, &quot;form&quot;]</td>
+  </tr>
+  <tr>
+    <td>Object</td>
+    <td><code>errors</code></td>
+    <td>An object of fields, containing an array of
+error messages (as strings)</td>
+  </tr>
+  </tbody>
+</table>
+
+###### Example
+```javascript
+import {setFormErrors} from "sp-react-forms/actions";
 ```
 
 ### `decorators`

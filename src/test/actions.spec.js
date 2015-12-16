@@ -1,7 +1,11 @@
 import sinon from "sinon";
 import {actions} from "../lib/index";
 
-const {validateForm, setStateValue} = actions;
+const {
+	validateForm,
+	setStateValue,
+	setFormErrors
+} = actions;
 
 const state = () => {};
 state.set = () => {};
@@ -259,4 +263,22 @@ context("Actions", function() {
 			assert.isTrue(spy.calledWith(["path", "to", "form", "fields", "password"], "hunter2"));
 		}));
 	});
+
+	describe("#setFormErrors", function() {
+		it("should set the correct field errors based on the input", sinon.test(function() {
+			const spy = this.spy(state, "set");
+			const input = {
+				errors: {
+					field: ["error message"]
+				},
+				store: ["path", "to", "form"]
+			};
+
+			setFormErrors(input, state);
+			assert.isTrue(spy.calledWith(["path", "to", "form", "errors"], {
+				field: ["error message"]
+			}));
+		}));
+	});
+
 });
