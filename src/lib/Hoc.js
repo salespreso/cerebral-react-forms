@@ -186,8 +186,10 @@ export default function(Component, store, formProps = {}) {
 				if (typeof this.form.errors[field] === "undefined") {
 					this.form.errors[field] = [];
 				}
-				_.extend(this.form.fields[field], this.props.form.fields[field]);
-				_.extend(this.form.errors[field], this.props.form.errors[field]);
+				const propFields = this.props.form.fields[field];
+				const propErrors = this.props.form.errors[field];
+				this.form.fields[field] = (propFields ? _.extend(this.form.fields[field], propFields) : {});
+				this.form.errors[field] = (propErrors ? _.extend(this.form.errors[field], propErrors) : []);
 			}
 
 			const {
