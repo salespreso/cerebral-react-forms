@@ -34,6 +34,7 @@ export default Form(MyForm, "test", ["testapp", "form"], {
 import _ from "lodash";
 import React from "react";
 import {Decorator as Cerebral} from "cerebral-react";
+import {getValidationData} from "./validation";
 
 /**
  Contains the value/update functions from the connector. Alleviates writing
@@ -152,6 +153,7 @@ export default function(Component, store, formProps = {}) {
 				form.fields[prop].errors = this.props.form.errors[prop] || [];
 			}
 
+			form.errors = {...this.props.form.errors};
 			return form;
 		}
 
@@ -197,9 +199,11 @@ export default function(Component, store, formProps = {}) {
 
 			const props = {
 				...other,
-				form: this.form
+				form: this.form,
+				getFormValidationData: () => {
+					return getValidationData(formProps, form.fields, store);
+				}
 			};
-
 
 			return (
 				<Component {...props} />

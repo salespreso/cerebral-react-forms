@@ -154,6 +154,8 @@ export default MyForm;
     - [`default`](#default)
   - [`signal`](#signal)
     - [`default`](#default)
+  - [`validation`](#validation)
+    - [`.getValidationData()`](#getvalidationdata)
 
 ### `hoc`
 > Higher Order Component to use on React classes for easy auto
@@ -461,4 +463,18 @@ import signal from "sp-react-forms/signal";
 
 signal.register(controller);
 ```
+
+### `validation`
+> Validation helper methods
+
+```javascript
+import form from "sp-react-forms/validation";
+```
+
+##### **Methods**
+#### `.getValidationData()`
+Converts form data and store data into an object that can be
+passed safely the `validateForm` cerebral action. This can be
+accessed in the Hoc/decorator by using `getFormValidationData`
+instead of using this directly for most forms.
 
