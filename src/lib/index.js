@@ -7,14 +7,14 @@
  @example
  For the following signal:
  ```javascript
- import {validateForm} from "sp-react-forms/actions";
+ import {validateForm, setFormErrors} from "sp-react-forms/actions";
 
  ...
 
  controller.signal("formSubmitted", [
 	validateForm, {
 		success: [],
-		error: []
+		error: [setFormErrors]
 	}
  ]);
  ```
@@ -24,8 +24,8 @@
  {
 	form: {
 		fields: {
-			password1: "",
-			password2: ""
+			password1: { value: "" },
+			password2: { value: "" }
 		},
 		errors: {}
 	}
@@ -68,7 +68,7 @@
  // param1: name of the form
  // param2: path to the store
  // param3: data about your form
- \@form("test", ["form"], {
+ \@form(["form"], {
 	// Fields contains the connector types and validations for each field
  	fields: {
  		password1: {
@@ -97,7 +97,7 @@
 		// Notice the name passed in matches the first parameter of the
 		// form decorator - this gets all the validators and information needed
 		// to pass to the validateForm action
- 		const data = this.props.getFormValidationData("test");
+ 		const data = this.props.getFormValidationData();
 
 		// Finally pass the data to the signal, where the first action is the
 		// validateForm action
@@ -105,7 +105,7 @@
  	}
 
  	handleChange(value) {
- 		const form = this.props.forms.test;
+ 		const form = this.props.form;
  		// An example of how to override the change function. Easy way
  		// to do asyncronous actions
  		form.fields.password1.onChange(value);
@@ -119,7 +119,7 @@
  	}
 
  	render() {
- 		const form = this.props.forms.test;
+ 		const form = this.props.form;
 
 		// Our input can now use the values that our form decorator created for us. Input
 		// this case it contains the value and onChange function

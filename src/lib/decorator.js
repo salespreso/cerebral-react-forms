@@ -19,7 +19,7 @@ Note to remove the '\' in front of the decorator syntax
 ```javascript
 import form from "sp-react-forms/decorator";
 
-\@form("test", ["testapp", "form"], {
+\@form(["testapp", "form"], {
 	fields: {
 		password1: {
 			connector: InputConnector(),

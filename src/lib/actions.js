@@ -104,7 +104,7 @@ export const setStateValue = (input, state) => {
 
  handleSubmit(e) {
 	e.preventDefault();
-	const data = this.props.getFormValidationData("test");
+	const data = this.props.getFormValidationData();
 	this.props.signals.formSubmitted(data);
  }
 

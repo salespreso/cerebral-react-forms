@@ -9,7 +9,7 @@ class MyForm extends React.Component {
  // ...
 }
 
-export default Form(MyForm, "test", ["testapp", "form"], {
+export default Form(MyForm, ["testapp", "form"], {
 	fields: {
 		password1: {
 			connector: InputConnector(),
@@ -54,7 +54,7 @@ import {getValidationData} from "./validation";
  }
 
  // You can access these values like so:
- this.props.forms.yourForm.yourField
+ this.props.form.yourField
 
  // Which will contain:
  { value: data, onChange={...} }
@@ -78,7 +78,7 @@ import {getValidationData} from "./validation";
 
  handleSubmit(e) {
 	e.preventDefault();
-		const data = this.props.getFormValidationData("test");
+		const data = this.props.getFormValidationData();
 		this.props.signals.formSubmitted(data);
 	}
 

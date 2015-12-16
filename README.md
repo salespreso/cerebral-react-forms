@@ -7,14 +7,14 @@ For this to work, the [signal must be registered](#signal)
 ##### Example
 For the following signal:
 ```javascript
-import {validateForm} from "sp-react-forms/actions";
+import {validateForm, setFormErrors} from "sp-react-forms/actions";
 
 ...
 
 controller.signal("formSubmitted", [
 	validateForm, {
 		success: [],
-		error: []
+		error: [setFormErrors]
 	}
 ]);
 ```
@@ -24,8 +24,8 @@ And the store:
 {
 	form: {
 		fields: {
-			password1: "",
-			password2: ""
+			password1: { value: "" },
+			password2: { value: "" }
 		},
 		errors: {}
 	}
@@ -68,7 +68,7 @@ function InputConnector() {
 // param1: name of the form
 // param2: path to the store
 // param3: data about your form
-\@form("test", ["form"], {
+\@form(["form"], {
 	// Fields contains the connector types and validations for each field
 	fields: {
 		password1: {
@@ -97,7 +97,7 @@ class MyForm extends React.Component {
 		// Notice the name passed in matches the first parameter of the
 		// form decorator - this gets all the validators and information needed
 		// to pass to the validateForm action
-		const data = this.props.getFormValidationData("test");
+		const data = this.props.getFormValidationData();
 
 		// Finally pass the data to the signal, where the first action is the
 		// validateForm action
@@ -105,7 +105,7 @@ class MyForm extends React.Component {
 	}
 
 	handleChange(value) {
-		const form = this.props.forms.test;
+		const form = this.props.form;
 		// An example of how to override the change function. Easy way
 		// to do asyncronous actions
 		form.fields.password1.onChange(value);
@@ -119,7 +119,7 @@ class MyForm extends React.Component {
 	}
 
 	render() {
-		const form = this.props.forms.test;
+		const form = this.props.form;
 
 		// Our input can now use the values that our form decorator created for us. Input
 		// this case it contains the value and onChange function
@@ -168,7 +168,7 @@ class MyForm extends React.Component {
 // ...
 }
 
-export default Form(MyForm, "test", ["testapp", "form"], {
+export default Form(MyForm, ["testapp", "form"], {
 	fields: {
 		password1: {
 			connector: InputConnector(),
@@ -206,7 +206,7 @@ function InputConnector() {
 }
 
 // You can access these values like so:
-this.props.forms.yourForm.yourField
+this.props.form.yourField
 
 // Which will contain:
 { value: data, onChange={...} }
@@ -229,7 +229,7 @@ is the `validateForm` action in `sp-react-forms/actions`
 
 handleSubmit(e) {
 	e.preventDefault();
-		const data = this.props.getFormValidationData("test");
+		const data = this.props.getFormValidationData();
 		this.props.signals.formSubmitted(data);
 	}
 
@@ -355,7 +355,7 @@ export default [
 
 handleSubmit(e) {
 	e.preventDefault();
-	const data = this.props.getFormValidationData("test");
+	const data = this.props.getFormValidationData();
 	this.props.signals.formSubmitted(data);
 }
 
@@ -423,7 +423,7 @@ Note to remove the '\' in front of the decorator syntax
 ```javascript
 import form from "sp-react-forms/decorator";
 
-\@form("test", ["testapp", "form"], {
+\@form(["testapp", "form"], {
 	fields: {
 		password1: {
 			connector: InputConnector(),
