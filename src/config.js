@@ -24,12 +24,14 @@ System.config({
     "cerebral-react": "npm:cerebral-react@0.7.0",
     "cerebral-router": "npm:cerebral-router@0.7.4",
     "core-js": "npm:core-js@1.2.6",
+    "dedent": "npm:dedent-js@1.0.1",
     "lodash": "npm:lodash@3.10.1",
     "react": "npm:react@0.14.3",
     "react-dom": "npm:react-dom@0.14.3",
     "sinon": "npm:sinon@1.17.2",
     "sp-application": "npm:sp-application@1.1.1",
     "sp-components": "npm:sp-components@0.0.25",
+    "sp-log": "npm:sp-log@1.1.9",
     "github:jspm/nodelibs-assert@0.1.0": {
       "assert": "npm:assert@1.3.0"
     },

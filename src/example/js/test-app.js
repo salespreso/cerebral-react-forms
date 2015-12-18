@@ -25,12 +25,7 @@ export default class TestApp {
 	static get store() {
 		return {
 			form: {
-				fields: {
-					password1: { value: "" },
-					password2: { value: "" },
-					name: { value: "" },
-					age: { value: "10" }
-				},
+				fields: {},
 				errors: {}
 			}
 		};

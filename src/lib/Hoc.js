@@ -2,6 +2,7 @@
  * Higher Order Component to use on React classes for easy auto
  * injection of form helpers (state/validation)
  * @example
+
 ```javascript
 import Form from "sp-react-forms/Hoc";
 
@@ -35,6 +36,10 @@ import _ from "lodash";
 import React from "react";
 import {Decorator as Cerebral} from "cerebral-react";
 import {getValidationData} from "./validation";
+import dedent from "dedent";
+import Log from "sp-log";
+
+const log = Log("forms");
 
 /**
  Contains the value/update functions from the connector. Alleviates writing
@@ -85,16 +90,98 @@ import {getValidationData} from "./validation";
  ...
  ```
  */
-
 export default function(Component, store, formProps = {}) {
 	@Cerebral({ form: store })
 	class Hoc extends React.Component {
 		constructor(props) {
 			super(props);
+			this.state = {
+				form: null
+			};
+		}
 
-			// Our form, with signals attached to the change functions,
-			// some usage checks, etc.
-			this.form = this.generateFormProps();
+		componentWillMount() {
+			this.updateStoreDefaults(formProps);
+		}
+
+		componentWillReceiveProps(nextProps) {
+			if (this.props.form.fields !== nextProps.form.fields) {
+				this.setState({
+					form: this.generateFormProps(nextProps)
+				});
+			}
+		}
+
+		updateFields(fields) {
+			const updatedFields = {};
+
+			for (const key in fields) {
+				const value = fields[key];
+				if (formProps.fields[key]) {
+					const connector = formProps.fields[key].connector;
+					if (typeof connector.toValue === "function") {
+						updatedFields[key] = connector.toValue(value, formProps.fields[key].options || {});
+					} else {
+						throw new Error(dedent`
+						\n\nConnector for the ${key} field does not have a toValue method.
+						Create one like so:
+
+						function Connector(data, done) {
+							...
+						}
+
+						Connector.toValue = function(value) {
+							return { value };
+						};
+						`);
+					}
+				} else {
+					throw new Error(dedent`
+					Form prop '${key}' does not exist
+					`);
+				}
+			}
+
+			this.props.signals.formDriver.setupFields({
+				store,
+				fields: {...this.props.form.fields, ...updatedFields}
+			});
+		}
+
+		updateStoreDefaults(form) {
+			const fields = {};
+
+			for (const prop in form.fields) {
+				const formProp = form.fields[prop];
+
+				let connector = formProp;
+				if (typeof connector === "object") {
+					connector = formProp.connector;
+				}
+
+				if (typeof connector.defaultValue === "object") {
+					fields[prop] = connector.defaultValue;
+				} else if (typeof connector.defaultValue === "function") {
+					fields[prop] = connector.defaultValue(formProp.options || {});
+				} else {
+					throw new Error(dedent`
+						\n\nConnector for the ${prop} field does not have a defaultKey.
+						Create one like so:
+
+						function Connector(data, done) {
+							...
+						}
+						Connector.defaultValue = { defaultKey: "" };
+
+						or
+
+						Connector.defaultValue = function(options) { return { defaultKey: "" }; };\n
+						`);
+				}
+			}
+
+			log.debug("Setup store defaults");
+			this.props.signals.formDriver.setupFields.sync({ fields, store });
 		}
 
 		signalFactory(name) {
@@ -114,21 +201,21 @@ export default function(Component, store, formProps = {}) {
 			};
 		}
 
-		generateFormProps() {
-			if (typeof this.props.form === "undefined") {
+		generateFormProps(props) {
+			if (typeof props.form === "undefined") {
 				throw new Error(`Can not find a form at path '${store.join(".")}'`);
 			}
 
-			if (typeof this.props.form.fields === "undefined") {
+			if (typeof props.form.fields === "undefined") {
 				throw new Error(`Can not find stored value '${[...store, "fields"].join(".")}'`);
 			}
 
-			if (typeof this.props.form.errors === "undefined") {
+			if (typeof props.form.errors === "undefined") {
 				throw new Error(`Can not find stored value '${[...store, "errors"].join(".")}'`);
 			}
 
 			const form = {
-				isSubmitted: this.props.form.isSubmitted || false,
+				isSubmitted: props.form.isSubmitted || false,
 				fields: {},
 				errors: {}
 			};
@@ -139,21 +226,20 @@ export default function(Component, store, formProps = {}) {
 
 				let connector = formProp;
 				if (typeof connector === "object") {
-
 					connector = formProp.connector;
 				}
 
-				if (typeof this.props.form.fields[prop] === "undefined") {
-					throw new Error(`Prop ${prop} not found. Did you forget to add it to the store?`);
+				if (typeof props.form.fields[prop] === "undefined") {
+					break;
 				}
 
 				// Form can be used inside your components as so:
 				// <YourComponent {...this.forms.formName.propName.fields} />
-				form.fields[prop] = connector(this.props.form.fields[prop], done);
-				form.fields[prop].errors = this.props.form.errors[prop] || [];
+				form.fields[prop] = connector(props.form.fields[prop], done);
+				form.fields[prop].errors = props.form.errors[prop] || [];
 			}
 
-			form.errors = {...this.props.form.errors};
+			form.errors = {...props.form.errors};
 			return form;
 		}
 
@@ -182,14 +268,8 @@ export default function(Component, store, formProps = {}) {
 		}
 
 		render() {
-			for (const field in this.form.fields) {
-				if (typeof this.form.errors[field] === "undefined") {
-					this.form.errors[field] = [];
-				}
-				const propFields = this.props.form.fields[field];
-				const propErrors = this.props.form.errors[field];
-				this.form.fields[field] = (propFields ? _.extend(this.form.fields[field], propFields) : {});
-				this.form.errors[field] = (propErrors ? _.extend(this.form.errors[field], propErrors) : []);
+			if (!this.state.form) {
+				return (<div></div>);
 			}
 
 			const {
@@ -201,7 +281,8 @@ export default function(Component, store, formProps = {}) {
 
 			const props = {
 				...other,
-				form: this.form,
+				form: this.state.form,
+				updateFields: this.updateFields.bind(this),
 				getFormValidationData: () => {
 					return getValidationData(formProps, form.fields, store);
 				}

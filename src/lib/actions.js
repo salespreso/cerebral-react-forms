@@ -163,6 +163,11 @@ export const validateForm = (input, state, output) => {
 	}
 };
 
+export const setFieldDefaults = (input, state) => {
+	const {store, fields} = input;
+	state.set([...store, "fields"], fields);
+};
+
 /**
  * Use after an error condition after validation fails, either by
  * using the validate action in this lib, or any other action that

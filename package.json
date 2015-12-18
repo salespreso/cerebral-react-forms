@@ -29,7 +29,9 @@
     "configFile": "src/config.js",
     "dependencies": {
       "ampersand-state": "npm:ampersand-state@^4.8.2",
-      "lodash": "npm:lodash@^3.10.1"
+      "dedent": "npm:dedent-js@^1.0.1",
+      "lodash": "npm:lodash@^3.10.1",
+      "sp-log": "npm:sp-log@^1.1.9"
     },
     "devDependencies": {
       "babel": "npm:babel-core@^5.8.24",
