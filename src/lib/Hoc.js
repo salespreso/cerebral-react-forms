@@ -3,32 +3,37 @@
  * injection of form helpers (state/validation)
  * @example
 
+Register your form:
+```javascript
+ import Form from "sp-react-forms/register";
+ // ...
+
+ const form = {
+	fields: {
+		password1: {
+		connector: InputConnector,
+		validators: [NotBlankValidator]
+	},
+ }
+
+ Form.register("myForm", form, ["form"]);
+```
+
+Render your form:
+
 ```javascript
 import Form from "sp-react-forms/Hoc";
 
 class MyForm extends React.Component {
+	// ...
 
- // ...
-
- handleSubmit(e) {
-	e.preventDefault();
-	this.props.signals.formSubmitted({ name: "yourForm" });
- }
+	handleSubmit(e) {
+		e.preventDefault();
+		this.props.signals.formSubmitted({ name: "myForm" });
+	}
 }
 
-export default Form(MyForm, ["testapp", "form"], {
-	fields: {
-		password1: {
-			connector: InputConnector(),
-
-			validators: [NotBlankValidator]
-		},
-		password2: {
-			connector: InputConnector(),
-			validators: [NotBlankValidator]
-		}
-	}
-});
+export default Form(MyForm, "myForm");
  ```
  * @module react-forms
  * @class hoc

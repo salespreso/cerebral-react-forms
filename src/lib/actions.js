@@ -1,8 +1,9 @@
 import dedent from "dedent";
+
 /**
  * Action methods to be used with cerebral and cerebral-react
- * @class actions
  * @module react-forms
+ * @class actions
  * @example
  ```javascript
  import {

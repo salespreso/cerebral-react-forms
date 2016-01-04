@@ -19,18 +19,7 @@ Note to remove the '\' in front of the decorator syntax
 ```javascript
 import form from "sp-react-forms/decorator";
 
-\@form(["testapp", "form"], {
-	fields: {
-		password1: {
-			connector: InputConnector(),
-			validators: [NotBlankValidator]
-		},
-		password2: {
-			connector: InputConnector(),
-			validators: [NotBlankValidator]
-		}
-	}
-})
+\@form("yourForm")
 class MyForm extends React.Component {
 
 }

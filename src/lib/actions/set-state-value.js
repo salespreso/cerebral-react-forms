@@ -1,4 +1,9 @@
 /**
+ * @class actions
+ * @module react-forms
+ */
+
+/**
  * A cerebral action for updating signals. Generally only
  * needed to be used internally by the higher order component
  * in this library. It is called on changing a single input.
@@ -13,6 +18,9 @@
  * @example
  ```javascript
  import {setStateValue} from "sp-react-forms/actions";
+
+ // In your form component...
+ this.props.signals.formDriver.stateChanged.sync({ store, name, value });
  ```
  */
 export const setStateValue = (input, state) => {

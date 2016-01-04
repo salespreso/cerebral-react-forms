@@ -1,13 +1,19 @@
 /**
+ * @class actions
+ * @module react-forms
+ */
+
+/**
  * Use after an error condition after validation fails, either by
  * using the validate action in this lib, or any other action that
  * affects the "errors" field. It expects the input to look like:
  ```javascript
  {
- fieldname1: ["error messages", "go", "here"],
- fieldname2: ["another error message"]
+	fieldname1: ["error messages", "go", "here"],
+	fieldname2: ["another error message"]
  }
  ```
+ *
  * Its input requires:
  * @method setFormErrors
  * @param {String[]} store - A list path the form in your store.
@@ -16,7 +22,17 @@
  * error messages (as strings)
  * @example
  ```javascript
- import {setFormErrors} from "sp-react-forms/actions";
+ import {validateForm, setFormErrors} from "sp-react-forms/actions";
+ import {setForm} from "sp-react-forms/factories";
+
+ // Your signal
+ [
+	setForm("yourForm"),
+	validateForm, {
+		success: [],
+		errors: [setFormErrors]
+	}
+ ]
  ```
  */
 export const setFormErrors = function(input, state) {
