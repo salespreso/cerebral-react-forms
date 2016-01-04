@@ -1,3 +1,5 @@
+import Form from "lib/register";
+
 const NotBlankValidator = function(value) {
 	return value === "" ? "Input should not be blank" : true;
 };
@@ -17,20 +19,22 @@ const IntegerHigherThan = function(num) {
 function InputConnector(data, done) {
 	return {
 		value: data.value,
-		getValue({ value }) {
-			return value;
-		},
 		onChange: (value) => {
 			done({ value });
 		}
 	};
 }
-InputConnector.defaultValue = { value: "" };
-InputConnector.toValue = function(value) {
+InputConnector.defaultStoreValue = { value: "" };
+
+InputConnector.toStore = function(value) {
 	return { value };
 };
 
-export default {
+InputConnector.fromStore = function({ value }) {
+	return value;
+};
+
+const form = {
 	fields: {
 		password1: {
 			connector: InputConnector,
@@ -51,11 +55,7 @@ export default {
 				return [IntegerHigherThan(20)];
 			}
 		}
-	},
-	clean(data) {
-		if (data.fields.password1 !== data.fields.password2) {
-			data.errors.password1 = ["Password1 must match password2"];
-		}
-		return data;
 	}
 };
+
+Form.register("testform", form, ["testapp", "form"]);

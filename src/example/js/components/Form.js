@@ -1,23 +1,14 @@
 import React from "react";
 import form from "lib/decorator";
 import {TextField, RaisedButton} from "sp-components";
-import testForm from "../forms/test-form";
+import "../forms/test-form";
 
-@form(["testapp", "form"], testForm)
+@form("testform")
 class Layout extends React.Component {
-	componentDidMount() {
-		this.props.updateFields({
-			// password1: "foo",
-			password2: "bar",
-			name: "Hi!",
-			age: "28"
-		});
-	}
 
 	handleSubmit(e) {
 		e.preventDefault();
-		const data = this.props.getFormValidationData();
-		this.props.signals.testapp.formSubmitted(data);
+		this.props.signals.testapp.formSubmitted();
 	}
 
 	handleChange(value) {

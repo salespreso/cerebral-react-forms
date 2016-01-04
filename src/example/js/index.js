@@ -6,6 +6,7 @@ import Router from "cerebral-router";
 import {Container} from "cerebral-react";
 
 import {Register, ApplicationRunner} from "sp-application";
+import {default as Forms} from "lib/register";
 
 import Layout from "./components/Layout";
 import signal from "lib/signal";
@@ -20,8 +21,12 @@ Register.import("example.js", [
 	const signals = ApplicationRunner.createSignals();
 	const routes = ApplicationRunner.createRoutes();
 
+	const services = {
+		forms: Forms.registered
+	};
+
 	const model = Model(store);
-	controller = Controller(model);
+	controller = Controller(model, services);
 
 	// Create our signals before we create the router
 	for (const routeName in signals) {
