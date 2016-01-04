@@ -1,10 +1,13 @@
 import React from "react";
 import TestUtils from "react/lib/ReactTestUtils";
+
 import Controller from "cerebral";
 import Model from "cerebral-baobab";
-import signal from "../lib/signal";
 import {Container} from "cerebral-react";
+
+import signal from "../lib/signal";
 import Hoc from "../lib/Hoc";
+import FormRegister from "../lib/register";
 
 function createController(store = {}) {
 	const model = Model(store);
@@ -13,15 +16,39 @@ function createController(store = {}) {
 	return controller;
 }
 
+function InputConnector(data, done) {
+	return {
+		value: data.value,
+		onChange: (value) => {
+			done({ value });
+		}
+	};
+}
+InputConnector.defaultStoreValue = { value: "" };
+
+InputConnector.toStore = function(value) {
+	return { value };
+};
+
+InputConnector.fromStore = function({ value }) {
+	return value;
+};
+
 context("Hoc", function() {
+	beforeEach(function() {
+		FormRegister.unregister();
+	});
+
 	it("should throw an error if a store does not exist", function() {
+		FormRegister.register("testform", {}, ["path", "to", "form"]);
+
 		class TestForm extends React.Component {
 			render() {
 				return <div/>;
 			}
 		}
 		const controller = createController();
-		const Form = Hoc(TestForm, ["path", "to", "form"], {});
+		const Form = Hoc(TestForm, "testform");
 		const root = () => TestUtils.renderIntoDocument(
 			<Container controller={controller}>
 				<Form />
@@ -32,39 +59,32 @@ context("Hoc", function() {
 	});
 
 	it("should contain the fields connector values as a prop", function() {
-		function TestConnector() {
-			return (data, done) => {
-				return {
-					value: data.value,
-					getValue: ({ value }) => value,
-					onChange: (value) => done({ value })
-				};
-			};
-		}
+		const form = {
+			fields: {
+				testField: InputConnector
+			}
+		};
+
+		FormRegister.register("testform", form, ["path", "to", "form"]);
 
 		class TestForm extends React.Component {
 			render() {
 				return <div/>;
 			}
 		}
-
-		const connector = TestConnector();
-
 		const controller = createController({
-			form: {
-				fields: {
-					testField: { value: "myValue" }
-				},
-				errors: {}
+			path: {
+				to: {
+					form: {
+						fields: {
+							testField: { value: "myValue" }
+						},
+						errors: {}
+					}
+				}
 			}
 		});
-
-		const Form = Hoc(TestForm, ["form"], {
-			fields: {
-				testField: connector
-			}
-		});
-
+		const Form = Hoc(TestForm, "testform");
 		const root = TestUtils.renderIntoDocument(
 			<Container controller={controller}>
 				<Form />
@@ -79,24 +99,30 @@ context("Hoc", function() {
 	});
 
 	it("should throw an error if the form fields does not exist", function() {
+		const form = {
+			fields: {
+				testField: InputConnector
+			}
+		};
+
+		FormRegister.register("testform", form, ["form"]);
+
 		class TestForm extends React.Component {
 			render() {
 				return <div/>;
 			}
 		}
-
 		const controller = createController({
 			form: {
 				errors: {}
 			}
 		});
-
-		const Form = Hoc(TestForm, ["form"], {});
+		const Form = Hoc(TestForm, "testform");
 		const render = () => {
 			const root = TestUtils.renderIntoDocument(
-				<Container controller={controller}>
+					<Container controller={controller}>
 					<Form />
-				</Container>
+					</Container>
 			);
 			TestUtils.findRenderedComponentWithType(root, TestForm);
 		};
@@ -105,19 +131,27 @@ context("Hoc", function() {
 	});
 
 	it("should throw an error if the form errors does not exist", function() {
+		const form = {
+			fields: {
+				testField: InputConnector
+			}
+		};
+
+		FormRegister.register("testform", form, ["form"]);
+
 		class TestForm extends React.Component {
 			render() {
 				return <div/>;
 			}
 		}
-
 		const controller = createController({
 			form: {
-				fields: {}
+				fields: {
+					testField: { value: "myValue" }
+				}
 			}
 		});
-
-		const Form = Hoc(TestForm, ["form"], {});
+		const Form = Hoc(TestForm, "testform");
 		const render = () => {
 			const root = TestUtils.renderIntoDocument(
 				<Container controller={controller}>

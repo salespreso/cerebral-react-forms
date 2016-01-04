@@ -1,5 +1,9 @@
 import Promise from "bluebird";
 import _ from "lodash";
+import {Log, LogLevel} from "sp-log";
+
+// Quiet logs during tests
+Log.setAllLevels(LogLevel.SILENT);
 
 var karma = window.__karma__;
 

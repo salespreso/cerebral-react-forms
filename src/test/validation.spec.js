@@ -5,12 +5,13 @@ function TestConnector(data, done) {
 		value: data.value,
 		onChange() {
 			done({ value: "" });
-		},
-		getValue({ value }) {
-			return value;
 		}
 	};
 }
+
+TestConnector.fromStore = function({ value }) {
+	return value;
+};
 
 function TestValidator() {
 	return true;
@@ -78,33 +79,7 @@ context("Validation", function() {
 			};
 
 			const func = () => getValidationData(form, fields, []);
-			assert.throws(func, `Field 'field' requires a connector with a getValue() method`);
-		});
-
-		it("should use a clean function if supplied", function() {
-			function clean() {}
-
-			const form = {
-				fields: {
-					field: TestConnector
-				},
-				clean
-			};
-
-			const fieldData = {
-				field: { value: "foo" }
-			};
-
-			const data = getValidationData(form, fieldData, storePath);
-			assert.equal(data.clean, clean);
-		});
-
-		it("the default clean method should just return the data entered", function() {
-			const form = {};
-			const fieldData = {};
-			const data = getValidationData(form, fieldData, storePath);
-			const dataIn = { foo: "bar" };
-			assert.equal(dataIn, data.clean(dataIn));
+			assert.throws(func);
 		});
 	});
 });

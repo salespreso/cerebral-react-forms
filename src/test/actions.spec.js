@@ -1,3 +1,4 @@
+import _ from "lodash";
 import sinon from "sinon";
 import {actions} from "../lib/index";
 
@@ -7,42 +8,81 @@ const {
 	setFormErrors
 } = actions;
 
-const state = () => {};
-state.set = () => {};
-state.merge = () => {};
+function InputConnector(data, done) {
+	return {
+		value: data.value,
+		onChange: (value) => {
+			done({ value });
+		}
+	};
+}
+InputConnector.defaultStoreValue = { value: "" };
+
+InputConnector.toStore = function(value) {
+	return { value };
+};
+
+InputConnector.fromStore = function({ value }) {
+	return value;
+};
+
+let store = {};
+
+const state = {
+	set() {},
+	get(args) {
+		return _.get(store, args);
+	},
+	merge() {}
+};
 
 const output = () => {};
 output.success = () => {};
 output.error = () => {};
 
 context("Actions", function() {
+	beforeEach(function() {
+		store = {};
+	});
+
 	describe("#validateForm", function() {
 		it("should succeed with no validations", sinon.test(function() {
 			const spy = this.spy(output, "success");
-
 			const fields = {
 				password: {
-					value: "password",
-					validators: []
+					connector: InputConnector
 				}
 			};
 
-			const input = {
-				fields,
-				store: [],
-				clean: data => data
+			const services = {
+				forms: {
+					testform: {
+						form: {
+							fields
+						},
+						store: ["testform"]
+					}
+				}
 			};
 
-			validateForm(input, state, output);
+			store = {
+				testform: {
+					fields: {
+						password: { value: "" }
+					},
+					errors: {}
+				}
+			};
+
+			validateForm({ name: "testform" }, state, output, services);
 			assert.isTrue(spy.called);
 		}));
 
 		it("should succeed when validations pass", sinon.test(function() {
 			const spy = this.spy(output, "success");
-
 			const fields = {
 				password: {
-					value: "password",
+					connector: InputConnector,
 					validators: [
 						function() {
 							return true;
@@ -51,91 +91,150 @@ context("Actions", function() {
 				}
 			};
 
-			const input = {
-				fields,
-				store: [],
-				clean: data => data
+			const services = {
+				forms: {
+					testform: {
+						form: {
+							fields
+						},
+						store: ["testform"]
+					}
+				}
 			};
 
-			validateForm(input, state, output);
+			store = {
+				testform: {
+					fields: {
+						password: { value: "" }
+					},
+					errors: {}
+				}
+			};
+
+			validateForm({ name: "testform" }, state, output, services);
 			assert.isTrue(spy.called);
 		}));
 
 		it("should fail when validations fail", sinon.test(function() {
 			const spy = this.spy(output, "error");
-
 			const fields = {
 				password: {
-					value: "password",
+					connector: InputConnector,
 					validators: [
 						function() {
-							return "Failed";
+							return "Validation failed";
 						}
 					]
 				}
 			};
 
-			const input = {
-				fields,
-				store: [],
-				clean: data => data
+			const services = {
+				forms: {
+					testform: {
+						form: {
+							fields
+						},
+						store: ["testform"]
+					}
+				}
 			};
 
-			validateForm(input, state, output);
+			store = {
+				testform: {
+					fields: {
+						password: { value: "" }
+					},
+					errors: {}
+				}
+			};
+
+			validateForm({ name: "testform" }, state, output, services);
 			assert.isTrue(spy.called);
 		}));
 
 		it("should allow validators to be a function", sinon.test(function() {
 			const spy = this.spy(output, "success");
-
 			const fields = {
 				password: {
-					value: "password",
-					validators: function() {
-						return [
-							function() {
-								return true;
-							}
-						];
+					connector: InputConnector,
+					validators: () => [
+						function() {
+							return true;
+						}
+					]
+				}
+			};
+
+			const services = {
+				forms: {
+					testform: {
+						form: {
+							fields
+						},
+						store: ["testform"]
 					}
 				}
 			};
 
-			const input = {
-				fields,
-				store: [],
-				clean: data => data
+			store = {
+				testform: {
+					fields: {
+						password: { value: "" }
+					},
+					errors: {}
+				}
 			};
 
-			validateForm(input, state, output);
+			validateForm({ name: "testform" }, state, output, services);
 			assert.isTrue(spy.called);
 		}));
 
 		it("should return the fields and their values on success", sinon.test(function() {
 			const spy = this.spy(output, "success");
-
 			const fields = {
 				password: {
-					value: "password"
+					connector: InputConnector,
+					validators: () => [
+						function() {
+							return true;
+						}
+					]
 				}
 			};
 
-			const input = {
-				fields,
-				store: [],
-				clean: data => data
+			const services = {
+				forms: {
+					testform: {
+						form: {
+							fields
+						},
+						store: ["testform"]
+					}
+				}
 			};
 
-			validateForm(input, state, output);
-			assert.isTrue(spy.calledWith({ cleanData: { password: "password" }}));
+			store = {
+				testform: {
+					fields: {
+						password: { value: "hunter2" }
+					},
+					errors: {}
+				}
+			};
+
+			validateForm({ name: "testform" }, state, output, services);
+			assert.isTrue(spy.calledWith({
+				cleanData: { password: "hunter2" },
+				errors: {},
+				store: ["testform"]
+			}));
 		}));
 
 		it("should allow errors to be returned as any type (SP-926)", sinon.test(function() {
 			const spy = this.spy(output, "error");
-
 			const fields = {
 				password: {
-					value: "password",
+					connector: InputConnector,
 					validators: [
 						function() {
 							return { message: "error" };
@@ -144,22 +243,39 @@ context("Actions", function() {
 				}
 			};
 
-			const input = {
-				fields,
-				store: [],
-				clean: data => data
+			const services = {
+				forms: {
+					testform: {
+						form: {
+							fields
+						},
+						store: ["testform"]
+					}
+				}
 			};
 
-			validateForm(input, state, output);
-			assert.isTrue(spy.calledWith({ errors: { password: [{ message: "error" }] }}));
+			store = {
+				testform: {
+					fields: {
+						password: { value: "hunter2" }
+					},
+					errors: {}
+				}
+			};
+
+			validateForm({ name: "testform" }, state, output, services);
+			assert.isTrue(spy.calledWith({
+				cleanData: {},
+				errors: { password: [{ message: "error" }] },
+				store: ["testform"]
+			}));
 		}));
 
 		it("should return the fields and their error messages on failure", sinon.test(function() {
 			const spy = this.spy(output, "error");
-
 			const fields = {
 				password: {
-					value: "password",
+					connector: InputConnector,
 					validators: [
 						function() {
 							return "error";
@@ -168,85 +284,32 @@ context("Actions", function() {
 				}
 			};
 
-			const input = {
-				fields,
-				store: [],
-				clean: data => data
-			};
-
-			validateForm(input, state, output);
-			assert.isTrue(spy.calledWith({ errors: { password: ["error"] }}));
-		}));
-
-		it("the clean method should have access to all current fields and error values", sinon.test(function() {
-			const cleanApi = { clean: data => data };
-			const spy = this.spy(cleanApi, "clean");
-
-			const fields = {
-				password1: {
-					value: "password"
-				},
-				password2: {
-					value: "",
-					validators: [() => "error"]
+			const services = {
+				forms: {
+					testform: {
+						form: {
+							fields
+						},
+						store: ["testform"]
+					}
 				}
 			};
-			const input = {
-				fields,
-				store: [],
-				clean: cleanApi.clean
+
+			store = {
+				testform: {
+					fields: {
+						password: { value: "hunter2" }
+					},
+					errors: {}
+				}
 			};
 
-			validateForm(input, state, output);
+			validateForm({ name: "testform" }, state, output, services);
 			assert.isTrue(spy.calledWith({
-				fields: {
-					password1: "password",
-					password2: ""
-				},
-				errors: {
-					password2: ["error"]
-				}
+				cleanData: {},
+				errors: { password: ["error"] },
+				store: ["testform"]
 			}));
-		}));
-
-		it("should allow errors to be added using the clean method", sinon.test(function() {
-			const spy = this.spy(output, "error");
-			const fields = {};
-			const input = {
-				fields,
-				store: [],
-				clean: () => {
-					return {
-						errors: {
-							all: ["error"]
-						}
-					};
-				}
-			};
-
-			validateForm(input, state, output);
-			assert.isTrue(spy.calledWith({ errors: { all: ["error"] }}));
-		}));
-
-		it("should allow values to be modified in the clean method", sinon.test(function() {
-			const spy = this.spy(output, "success");
-			const fields = {
-				password: {
-					value: "password"
-				}
-			};
-
-			const input = {
-				fields,
-				store: [],
-				clean: (data) => {
-					data.fields.password = "password1";
-					return data;
-				}
-			};
-
-			validateForm(input, state, output);
-			assert.isTrue(spy.calledWith({ cleanData: { password: "password1" }}));
 		}));
 	});
 
@@ -280,5 +343,4 @@ context("Actions", function() {
 			}));
 		}));
 	});
-
 });
