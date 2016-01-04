@@ -29,12 +29,6 @@ import form from "sp-react-forms/decorator";
 			connector: InputConnector(),
 			validators: [NotBlankValidator]
 		}
-	},
-	clean(data) {
-		if (data.fields.password1 !== data.fields.password2) {
-			data.errors.password1 = ["Password1 must match password2"];
-		}
-		return data;
 	}
 })
 class MyForm extends React.Component {
@@ -42,8 +36,8 @@ class MyForm extends React.Component {
 }
 ```
  */
-export default function(store, props = {}) {
+export default function(name) {
 	return function(Component) {
-		return Hoc(Component, store, props);
+		return Hoc(Component, name);
 	};
 }

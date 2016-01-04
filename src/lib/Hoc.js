@@ -7,25 +7,26 @@
 import Form from "sp-react-forms/Hoc";
 
 class MyForm extends React.Component {
+
  // ...
+
+ handleSubmit(e) {
+	e.preventDefault();
+	this.props.signals.formSubmitted({ name: "yourForm" });
+ }
 }
 
 export default Form(MyForm, ["testapp", "form"], {
 	fields: {
 		password1: {
 			connector: InputConnector(),
+
 			validators: [NotBlankValidator]
 		},
 		password2: {
 			connector: InputConnector(),
 			validators: [NotBlankValidator]
 		}
-	},
-	clean(data) {
-		if (data.fields.password1 !== data.fields.password2) {
-			data.errors.password1 = ["Password1 must match password2"];
-		}
-		return data;
 	}
 });
  ```
@@ -35,11 +36,7 @@ export default Form(MyForm, ["testapp", "form"], {
 import _ from "lodash";
 import React from "react";
 import {Decorator as Cerebral} from "cerebral-react";
-import {getValidationData} from "./validation";
-import dedent from "dedent";
-import Log from "sp-log";
-
-const log = Log("forms");
+import Register from "./register";
 
 /**
  Contains the value/update functions from the connector. Alleviates writing
@@ -72,116 +69,22 @@ const log = Log("forms");
  @property this.props.forms
  */
 
-/**
- This gets the validators and values for all of your forms fields, making it easy to
- pass to your signals. Generally this gets passed to a signal where the first action
- is the `validateForm` action in `sp-react-forms/actions`
- @method this.props.getFormValidationData
- @example
- ```javascript
- ...
+export default function(Component, name) {
+	const {store, form: formProps} = Register.get(name);
 
- handleSubmit(e) {
-	e.preventDefault();
-		const data = this.props.getFormValidationData();
-		this.props.signals.formSubmitted(data);
-	}
-
- ...
- ```
- */
-export default function(Component, store, formProps = {}) {
 	@Cerebral({ form: store })
 	class Hoc extends React.Component {
 		constructor(props) {
 			super(props);
 			this.state = {
-				form: null
+				form: this.generateFormProps(props)
 			};
 		}
 
-		componentWillMount() {
-			this.updateStoreDefaults(formProps);
-		}
-
 		componentWillReceiveProps(nextProps) {
-			if (this.props.form.fields !== nextProps.form.fields) {
-				this.setState({
-					form: this.generateFormProps(nextProps)
-				});
-			}
-		}
-
-		updateFields(fields) {
-			const updatedFields = {};
-
-			for (const key in fields) {
-				const value = fields[key];
-				if (formProps.fields[key]) {
-					const connector = formProps.fields[key].connector;
-					if (typeof connector.toValue === "function") {
-						updatedFields[key] = connector.toValue(value, formProps.fields[key].options || {});
-					} else {
-						throw new Error(dedent`
-						\n\nConnector for the ${key} field does not have a toValue method.
-						Create one like so:
-
-						function Connector(data, done) {
-							...
-						}
-
-						Connector.toValue = function(value) {
-							return { value };
-						};
-						`);
-					}
-				} else {
-					throw new Error(dedent`
-					Form prop '${key}' does not exist
-					`);
-				}
-			}
-
-			this.props.signals.formDriver.setupFields({
-				store,
-				fields: {...this.props.form.fields, ...updatedFields}
+			this.setState({
+				form: this.generateFormProps(nextProps)
 			});
-		}
-
-		updateStoreDefaults(form) {
-			const fields = {};
-
-			for (const prop in form.fields) {
-				const formProp = form.fields[prop];
-
-				let connector = formProp;
-				if (typeof connector === "object") {
-					connector = formProp.connector;
-				}
-
-				if (typeof connector.defaultValue === "object") {
-					fields[prop] = connector.defaultValue;
-				} else if (typeof connector.defaultValue === "function") {
-					fields[prop] = connector.defaultValue(formProp.options || {});
-				} else {
-					throw new Error(dedent`
-						\n\nConnector for the ${prop} field does not have a defaultKey.
-						Create one like so:
-
-						function Connector(data, done) {
-							...
-						}
-						Connector.defaultValue = { defaultKey: "" };
-
-						or
-
-						Connector.defaultValue = function(options) { return { defaultKey: "" }; };\n
-						`);
-				}
-			}
-
-			log.debug("Setup store defaults");
-			this.props.signals.formDriver.setupFields.sync({ fields, store });
 		}
 
 		signalFactory(name) {
@@ -193,11 +96,7 @@ export default function(Component, store, formProps = {}) {
 				}
 
 				// Set signal here
-				signals.formDriver.stateChanged.sync({
-					store,
-					name,
-					value
-				});
+				signals.formDriver.stateChanged.sync({ store, name, value });
 			};
 		}
 
@@ -243,35 +142,7 @@ export default function(Component, store, formProps = {}) {
 			return form;
 		}
 
-		getValidationData(forms) {
-			return (name) => {
-				const validationData = {};
-				const form = forms[name].fields;
-				for (const prop in formProps.fields) {
-					let data = _.omit(form[prop], _.isFunction);
-					data = _.omit(data, "errors");
-
-					validationData[prop] = {
-						value: form[prop].getValue(data),
-						validators: formProps.fields[prop].validators || []
-					};
-				}
-
-				return {
-					clean: formProps.clean || function(data) {
-						return data;
-					},
-					fields: {...validationData},
-					store
-				};
-			};
-		}
-
 		render() {
-			if (!this.state.form) {
-				return (<div></div>);
-			}
-
 			const {
 				// Don't pass our cerebral values to the component
 				get,
@@ -281,11 +152,7 @@ export default function(Component, store, formProps = {}) {
 
 			const props = {
 				...other,
-				form: this.state.form,
-				updateFields: this.updateFields.bind(this),
-				getFormValidationData: () => {
-					return getValidationData(formProps, form.fields, store);
-				}
+				form: this.state.form
 			};
 
 			return (

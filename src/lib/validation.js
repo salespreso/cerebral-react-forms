@@ -1,3 +1,4 @@
+import dedent from "dedent";
 /**
  * Validation helper methods
  * @module react-forms
@@ -23,17 +24,28 @@ export const getValidationData = function(form, storeData, storePath) {
 
 		let connector;
 		if (typeof fields[prop] === "function") {
-			connector = fields[prop](data);
+			connector = fields[prop];
 		} else {
-			connector = fields[prop].connector(data);
+			connector = fields[prop].connector;
 		}
 
-		if (typeof connector.getValue !== "function") {
-			throw new Error(`Field '${prop}' requires a connector with a getValue() method`);
+		if (typeof connector.fromStore !== "function") {
+			throw new Error(dedent`
+				\n\nConnector for the ${prop} field does not have a fromStore method.
+				Create one like so:
+
+				function Connector(data, done) {
+				...
+				}
+
+				Connector.fromStore = function({ value }) {
+				return value;
+				};
+			`);
 		}
 
 		validationData[prop] = {
-			value: connector.getValue(data),
+			value: connector.fromStore(data),
 			validators: fields[prop].validators || []
 		};
 	}

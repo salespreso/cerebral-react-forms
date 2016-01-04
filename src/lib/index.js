@@ -79,16 +79,6 @@
  			connector: InputConnector(),
  			validators: [NotBlankValidator]
  		},
- 	},
-	// The clean function will be run at the end.You can use this to throw
-	// new errors based on the entire form's data, and you can actually use
-	// this to modify current fields values and error messages before
-	// validation is finally complete
- 	clean(data) {
- 		if (data.fields.password1 !== data.fields.password2) {
- 			data.errors.password1 = ["Password1 must match password2"];
- 		}
- 		return data;
  	}
  })
  class MyForm extends React.Component {

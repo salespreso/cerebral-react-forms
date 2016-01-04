@@ -6,7 +6,7 @@
  ```
  * @class signal
  */
-import {setStateValue, setFieldDefaults} from "./actions";
+import {setStateValue} from "./actions";
 
 /**
  * Adds the state update signal needed for updating each field.
@@ -26,10 +26,6 @@ export default {
 	register(controller) {
 		controller.signal("formDriver.stateChanged", [
 			setStateValue
-		]);
-
-		controller.signal("formDriver.setupFields", [
-			setFieldDefaults
 		]);
 	}
 };
