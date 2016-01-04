@@ -51,9 +51,6 @@ export const getValidationData = function(form, storeData, storePath) {
 	}
 
 	return {
-		clean: form.clean || function(data) {
-			return data;
-		},
 		fields: {...validationData},
 		store: storePath
 	};
