@@ -3,7 +3,7 @@
  * for subsequent actions. This could easily be
  * replaced by passing "name" to the signal running
  * the actions.
- * @prop {String} name - The name of the form to set to
+ * @param {String} name - Then name of your form. Can be dot notation
  */
 export const setForm = function(name) {
 	function action(input, state, output) {

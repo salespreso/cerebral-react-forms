@@ -18,7 +18,7 @@ export default class Register {
 	 * @method get
 	 * @static
 	 * @param {String} name - The name of the form. Can be dot notation to indicate depth
-	 * @returns {String}
+	 * @return {String}
 	 * @example
 	 * Form.get("form");
 	 * Form.get("path.to.form");

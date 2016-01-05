@@ -4,8 +4,11 @@ import {Decorator as Cerebral} from "cerebral-react";
 import Register from "./register";
 
 /**
- * @module react-forms
- * @class actions
+ * Higher order component used to wrap your forms. Passes in a registered
+ * form's values, events and errors automatically
+ * @param {ReactElement} Component
+ * @param {String} name - The name of your form. Can be dot notation
+ * @return {ReactElement}
  */
 export default function(Component, name) {
 	const {store, form: formProps} = Register.get(name);
