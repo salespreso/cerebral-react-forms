@@ -14,6 +14,9 @@ import dedent from "dedent";
  ```
  */
 
+/**
+ * @ignore
+ */
 export const convertToValue = function(form, fields) {
 	const updatedFields = {};
 

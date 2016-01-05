@@ -1,5 +1,8 @@
 import dedent from "dedent";
 
+/**
+ * @ignore
+ */
 export function servicesCheck(services) {
 	if (!services.forms) {
 		throw new Error(dedent`

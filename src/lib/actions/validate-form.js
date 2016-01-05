@@ -38,11 +38,6 @@ function validateInput(field, value) {
 }
 
 /**
- * @class actions
- * @module react-forms
- */
-
-/**
  * A cerebral action for validating your react forms. Generally
  * this will be the first action in your signal, as it's used
  * to validate all of your forms inputs and branch off as either
@@ -50,20 +45,18 @@ function validateInput(field, value) {
  * @method validateForm
  * @param {String} name - the name of the form you wish to validate
  * @example
- ```javascript
- // Your signal.js
- import {setForm} from "sp-react-forms/factories";
- import {validateForm} from "sp-react-forms/actions";
- export default [
-  setForm("myForm"),
-	validateForm, {
-		success: [...],
-		error: [...]
-	}
- ];
- ```
+ * // Your signal.js
+ * import {setForm} from "sp-react-forms/factories";
+ * import {validateForm} from "sp-react-forms/actions";
+ * export default [
+ *   setForm("myForm"),
+ *   validateForm, {
+ *     success: [...],
+ *     error: [...]
+ *   }
+ * ];
  */
-export const validateForm = (input, state, output, services) => {
+export function validateForm(input, state, output, services) {
 	servicesCheck(services);
 	const {name} = input;
 	const {form, store: storePath} = services.forms[name];
@@ -110,7 +103,7 @@ export const validateForm = (input, state, output, services) => {
 		});
 		output.success(outputData);
 	}
-};
+}
 
 validateForm.input = {
 	name: String

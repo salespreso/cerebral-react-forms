@@ -7,19 +7,21 @@
   "scripts": {
     "test": "node_modules/.bin/karma start --single-run",
     "test:continuous": "node_modules/.bin/karma start --port=`get-port`",
-    "docs": "yuidoc2md \"src/lib/**/*.js\" > README.md",
+    "docs": "esdoc -c esdoc.json",
     "lint": "eslint -c .eslintrc --quiet --cache src/lib src/example"
   },
   "keywords": [],
   "devDependencies": {
+    "esdoc": "^0.4.3",
+    "esdoc-es7-plugin": "0.0.3",
+    "esdoc-importpath-plugin": "0.0.1",
     "eslint-config-salespreso": "^0.1.8",
     "get-port": "^1.0.0",
     "git-hooks": "^1.0.2",
     "gulp": "^3.9.0",
     "jspm": "^0.16.12",
     "karma-config": "^1.0.1",
-    "salespreso-gulp": "^4.1.1",
-    "yuidoc2md": "^0.8.2"
+    "salespreso-gulp": "^4.1.1"
   },
   "main": "index",
   "jspm": {

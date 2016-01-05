@@ -10,3 +10,4 @@ localsettings.js
 .build
 .tern-port
 .eslintcache
+esdoc

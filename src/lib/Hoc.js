@@ -1,79 +1,12 @@
-/**
- * Higher Order Component to use on React classes for easy auto
- * injection of form helpers (state/validation)
- * @example
-
-Register your form:
-```javascript
- import Form from "sp-react-forms/register";
- // ...
-
- const form = {
-	fields: {
-		password1: {
-		connector: InputConnector,
-		validators: [NotBlankValidator]
-	},
- }
-
- Form.register("myForm", form, ["form"]);
-```
-
-Render your form:
-
-```javascript
-import Form from "sp-react-forms/Hoc";
-
-class MyForm extends React.Component {
-	// ...
-
-	handleSubmit(e) {
-		e.preventDefault();
-		this.props.signals.formSubmitted({ name: "myForm" });
-	}
-}
-
-export default Form(MyForm, "myForm");
- ```
- * @module react-forms
- * @class hoc
- */
 import _ from "lodash";
 import React from "react";
 import {Decorator as Cerebral} from "cerebral-react";
 import Register from "./register";
 
 /**
- Contains the value/update functions from the connector. Alleviates writing
- similar code for updating the state.
- @example
- ```javascript
- // If your connector is the following for a particular field:
- function InputConnector() {
-	return (data, done) => {
-		return {
-			value: data.value,
-			onChange: (value) => {
-				done({ value });
-			}
-		};
-	};
- }
-
- // You can access these values like so:
- this.props.form.yourField
-
- // Which will contain:
- { value: data, onChange={...} }
- ```
-
- In this example, when `onChange` is called will be passed to the connector, which in turn
- fires a signal to update the store.
-
- `value` will contain data from the state - this stop a lot of boilerplate having to be written.
- @property this.props.forms
+ * @module react-forms
+ * @class actions
  */
-
 export default function(Component, name) {
 	const {store, form: formProps} = Register.get(name);
 

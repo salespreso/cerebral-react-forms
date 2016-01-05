@@ -1,0 +1,20 @@
+{
+  "source": "./src/lib",
+  "destination": "./esdoc",
+	"manual": {
+		"installation": ["docs/installation.md"],
+		"usage": ["docs/usage.md"]
+	},
+  "plugins": [
+    { "name": "esdoc-es7-plugin" },
+		{
+			"name": "esdoc-importpath-plugin",
+			"option": {
+				"replaces": [
+					{ "from": "lib/", "to": "" }
+				]
+			}
+		}
+  ],
+	"lint": false
+}
